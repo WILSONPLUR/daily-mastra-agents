@@ -1,0 +1,1 @@
+export const DEFAULT_MODEL_NAME="openai/gpt-5.4-mini";

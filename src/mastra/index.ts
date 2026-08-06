@@ -9,12 +9,17 @@ import {
   SensitiveDataFilter,
 } from '@mastra/observability';
 import { agent } from './agents/agent';
+import { docsAgent } from './agents/docs-agent';
+import { ticketAgent } from "./agents/ticket-agent"
 import { startScheduleTool, stopScheduleTool } from './tools/schedule-tools';
 import { webFetchTool } from './tools/web-fetch-tool';
+import { readFiles } from './tools/read-files';
+import { importFileToDocsWorkflow } from './workflows/import-file-to-docs';
 
 export const mastra = new Mastra({
-  agents: { agent },
-  tools: { startScheduleTool, stopScheduleTool, webFetchTool },
+  agents: { agent, docsAgent, ticketAgent },
+  tools: { startScheduleTool, stopScheduleTool, webFetchTool, readFiles },
+  workflows: { importFileToDocsWorkflow },
   storage: new MastraCompositeStore({
     id: 'composite-storage',
     default: new LibSQLStore({

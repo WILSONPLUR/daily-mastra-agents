@@ -5,8 +5,10 @@
   "main": "index.js",
   "private": true,
   "scripts": {
+    "predev": "node scripts/patch-mastra-studio-attachments.mjs",
     "dev": "mastra dev",
     "build": "mastra build",
+    "test": "tsx --test tests/**/*.test.mjs",
     "start": "mastra start"
   },
   "keywords": [],
@@ -17,17 +19,21 @@
     "node": ">=22.13.0"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^4.0.8",
+    "@composio/core": "^0.13.1",
     "@mastra/core": "latest",
     "@mastra/duckdb": "latest",
     "@mastra/libsql": "latest",
+    "@mastra/mcp": "^1.15.0",
     "@mastra/memory": "latest",
     "@mastra/observability": "latest",
-    "zod": "^4.4.3",
-    "@ai-sdk/openai": "^4.0.8"
+    "file-type": "^21.0.0",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@types/node": "latest",
     "mastra": "latest",
+    "tsx": "^4.20.6",
     "typescript": "^6.0.3"
   }
 }
