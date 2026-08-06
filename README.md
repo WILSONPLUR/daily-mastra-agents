@@ -1,4 +1,4 @@
-# Personal Docs & Ticket Assistant
+# Daily Mastra Agents - Personal Docs & Ticket Assistant
 
 A local-first [Mastra](https://mastra.ai) application with specialized agents for document operations, ticket management, web research, workspace tasks, and recurring schedules. It connects Google Docs, Linear, and Trello through Composio while keeping agent memory and development observability in project-controlled storage.
 
