@@ -10,16 +10,18 @@ import {
 } from '@mastra/observability';
 import { agent } from './agents/agent';
 import { docsAgent } from './agents/docs-agent';
-import { ticketAgent } from "./agents/ticket-agent"
+import { mentorAgent } from './agents/mentor-agent';
+import { ticketAgent } from './agents/ticket-agent';
 import { startScheduleTool, stopScheduleTool } from './tools/schedule-tools';
 import { webFetchTool } from './tools/web-fetch-tool';
 import { readFiles } from './tools/read-files';
 import { importFileToDocsWorkflow } from './workflows/import-file-to-docs';
+import { ingestResourcesWorkflow } from './workflows/ingest-resources';
 
 export const mastra = new Mastra({
-  agents: { agent, docsAgent, ticketAgent },
+  agents: { agent, docsAgent, ticketAgent, mentorAgent },
   tools: { startScheduleTool, stopScheduleTool, webFetchTool, readFiles },
-  workflows: { importFileToDocsWorkflow },
+  workflows: { importFileToDocsWorkflow, ingestResourcesWorkflow },
   storage: new MastraCompositeStore({
     id: 'composite-storage',
     default: new LibSQLStore({
