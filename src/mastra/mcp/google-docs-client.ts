@@ -1,15 +1,27 @@
 import { Composio, SessionPreset } from '@composio/core';
 import { MCPClient } from '@mastra/mcp';
 
-import { getComposioConfig } from '../../config/env';
+import { getComposioConfig, getComposioToolkitVersion } from '../../config/env';
+import { executeSessionTool } from '../tools/session-execute';
 
 type GoogleDocsTools = Awaited<ReturnType<MCPClient['listTools']>>;
+type GoogleDocsIntegration = {
+  tools: GoogleDocsTools;
+  execute: (
+    toolSlug: string,
+    args: Record<string, unknown>,
+    signal?: AbortSignal,
+  ) => Promise<Record<string, unknown>>;
+};
 
-let googleDocsToolsPromise: Promise<GoogleDocsTools> | undefined;
+let googleDocsIntegrationPromise: Promise<GoogleDocsIntegration> | undefined;
 
-async function loadGoogleDocsTools(): Promise<GoogleDocsTools> {
+async function loadGoogleDocsIntegration(): Promise<GoogleDocsIntegration> {
   const { apiKey, userId } = getComposioConfig();
-  const composio = new Composio({ apiKey });
+  const composio = new Composio({
+    apiKey,
+    toolkitVersions: { googledocs: getComposioToolkitVersion('googledocs') },
+  });
 
   const session = await composio.sessions.create(userId, {
     toolkits: ['googledocs'],
@@ -36,7 +48,15 @@ async function loadGoogleDocsTools(): Promise<GoogleDocsTools> {
   });
 
   try {
-    return await mcpClient.listTools();
+    const tools = await mcpClient.listTools();
+    return {
+      tools,
+      execute: async (toolSlug, args, signal) => {
+        const result = await executeSessionTool(session, toolSlug, args, signal);
+        if (result.error) throw new Error(result.error);
+        return result.data;
+      },
+    };
   } catch (error) {
     await mcpClient.disconnect();
     throw error;
@@ -48,12 +68,26 @@ async function loadGoogleDocsTools(): Promise<GoogleDocsTools> {
  * Failed initialization is not cached, so the next agent run can retry.
  */
 export function getGoogleDocsTools(): Promise<GoogleDocsTools> {
-  googleDocsToolsPromise ??= loadGoogleDocsTools().catch((error: unknown) => {
-    googleDocsToolsPromise = undefined;
+  return getGoogleDocsIntegration().then(integration => integration.tools);
+}
+
+export function executeGoogleDocsTool(
+  toolSlug: string,
+  args: Record<string, unknown>,
+  signal?: AbortSignal,
+): Promise<Record<string, unknown>> {
+  return getGoogleDocsIntegration().then(integration =>
+    integration.execute(toolSlug, args, signal),
+  );
+}
+
+function getGoogleDocsIntegration(): Promise<GoogleDocsIntegration> {
+  googleDocsIntegrationPromise ??= loadGoogleDocsIntegration().catch((error: unknown) => {
+    googleDocsIntegrationPromise = undefined;
     throw new Error('Unable to connect the Google Docs tools through Composio.', {
       cause: error,
     });
   });
 
-  return googleDocsToolsPromise;
+  return googleDocsIntegrationPromise;
 }
