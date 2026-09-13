@@ -2,7 +2,7 @@ import { Composio, SessionPreset } from '@composio/core';
 import { MCPClient } from '@mastra/mcp';
 
 import { getComposioConfig, getComposioToolkitVersion } from '../../config/env';
-import { executeSessionTool } from './session-execute';
+import { executeSessionTool } from '../tools/session-execute';
 
 type GoogleDocsTools = Awaited<ReturnType<MCPClient['listTools']>>;
 type GoogleDocsIntegration = {

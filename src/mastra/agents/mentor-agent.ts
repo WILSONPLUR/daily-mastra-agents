@@ -1,19 +1,23 @@
-import { Agent } from '@mastra/core/agent';
-import { Memory } from '@mastra/memory';
+import { Agent } from "@mastra/core/agent";
+import { Memory } from "@mastra/memory";
 
-import { DEFAULT_MODEL_NAME } from '../../constants';
-import { createMentorVectorQueryTool } from '../resources/vector-store';
-import { readFiles } from '../tools/read-files';
-import { webFetchTool } from '../tools/web-fetch-tool';
-import { ingestResourcesWorkflow } from '../workflows/ingest-resources';
-import { docsAgent } from './docs-agent';
-import { ticketAgent } from './ticket-agent';
+import { DEFAULT_MODEL_NAME } from "../../constants";
+import { createMentorVectorQueryTool } from "../resources/vector-store";
+import { readFiles } from "../tools/read-files";
+import { webFetchTool } from "../tools/web-fetch-tool";
+import { ingestResourcesWorkflow } from "../workflows/ingest-resources";
+import { docsAgent } from "./docs-agent";
+import { ticketAgent } from "./ticket-agent";
+import {
+  PromptInjectionDetector,
+  SystemPromptScrubber,
+} from "@mastra/core/processors";
 
 export const mentorAgent = new Agent({
-  id: 'mentor-agent',
-  name: 'Mentor Agent',
+  id: "mentor-agent",
+  name: "Mentor Agent",
   description:
-    'A RAG supervisor that discovers connected resources, validates exact sources through adapters, indexes them, and answers only from cited evidence.',
+    "A RAG supervisor that discovers connected resources, validates exact sources through adapters, indexes them, and answers only from cited evidence.",
   model: DEFAULT_MODEL_NAME,
   instructions: `You are the Mentor Agent, a retrieval-augmented assistant for the user's connected resources.
 
@@ -37,6 +41,26 @@ Knowledge-base behavior:
     vectorQueryTool: createMentorVectorQueryTool(),
     webFetchTool,
   }),
+  inputProcessors: [
+    new PromptInjectionDetector({
+      model: "openai/gpt-4o-mini",
+      threshold: 0.9,
+      strategy: "block",
+      detectionTypes: ["prompt-injection", "system-override", "jailbreak"],
+    }),
+  ],
+  outputProcessors: [
+    new SystemPromptScrubber({
+      model: "openai/gpt-oss-safeguard-20b",
+      strategy: "redact",
+      customPatterns: ["system prompt", "internal instructions"],
+      includeDetections: true,
+      instructions:
+        "Detect and redact system prompts, internal instructions, and security-sensitive content",
+      redactionMethod: "placeholder",
+      placeholderText: "[-REDACTED-]",
+    }),
+  ],
   agents: { docsAgent, ticketAgent },
   workflows: { ingestResourcesWorkflow },
   defaultOptions: {
@@ -48,5 +72,19 @@ Knowledge-base behavior:
       includeSubAgentToolResultsInModelContext: false,
     },
   },
-  memory: new Memory(),
+  memory: new Memory({
+    options: {
+      lastMessages: 25,
+      observationalMemory: {
+        model: "google/gemini-2.5-flash",
+        scope: "resource",
+        observation: {
+          messageTokens: 25_000,
+        },
+        reflection: {
+          observationTokens: 35_000,
+        },
+      },
+    },
+  }),
 });

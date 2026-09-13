@@ -3,7 +3,7 @@ import { Memory } from "@mastra/memory";
 
 import { DEFAULT_MODEL_NAME } from "../../constants";
 import { getLinearTools } from "../mcp/linear-client";
-import { assertUniqueModelToolNames } from "../mcp/tool-name-safety";
+import { assertUniqueModelToolNames } from "../tools/tool-name-safety";
 import { getTrelloTools } from "../mcp/trello-client";
 
 async function getTicketTools() {
