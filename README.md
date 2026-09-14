@@ -129,6 +129,9 @@ yarn build    # production bundle
 yarn start    # start a built application
 ```
 
+`yarn build` also imports the generated artifact's Mastra dependencies to catch
+runtime export mismatches before deployment, without connecting to the database.
+
 ## Document import flow
 
 Chat uploads are resolved directly from the Docs Agent execution context with `read_files({})`. Server and workflow callers provide a `filePath` inside `workspace/`, `uploads/`, or a directory configured through `DOCUMENT_UPLOAD_DIRS`.
