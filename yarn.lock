@@ -1028,7 +1028,7 @@
   dependencies:
     "@lukeed/csprng" "^1.1.0"
 
-"@mastra/core@latest":
+"@mastra/core@1.55.0":
   version "1.55.0"
   resolved "https://registry.yarnpkg.com/@mastra/core/-/core-1.55.0.tgz#91d88be17126e9217821dd52b0cf7adbe94105d5"
   integrity sha512-h6Ic64TE3KbmbjUXOxSXfyhAGyT8AzCJgfe8GnC4zQukXhpfz0J7jUgOUr9B+O9sC6EQ1LsHjjsmXBfE0xNSrw==
@@ -1158,13 +1158,13 @@
   resolved "https://registry.yarnpkg.com/@mastra/observability/-/observability-1.16.3.tgz#02fe647a067375238f0b99e5eb2abc688da33a6e"
   integrity sha512-HC/KsCGzeJN3b2GAf2koE0QfRhtur1i03lE5EO6c8cnjQ9wU4Y8dJ5jCvG3WmNcv4Q+ILcR1UeDtrHYYxLL43Q==
 
-"@mastra/pg@1.20.0":
-  version "1.20.0"
-  resolved "https://registry.yarnpkg.com/@mastra/pg/-/pg-1.20.0.tgz#163cab280e7da05466a506a28a75795ad2b9d01a"
-  integrity sha512-cuThEP0TdvgWW70KEkaONAaeiny/l/VOLz3nUIltQBm64TlPBu9iGN1cJdt0gWYXTfPWjTgqc7r0hOB34ay3bQ==
+"@mastra/pg@1.18.0":
+  version "1.18.0"
+  resolved "https://registry.yarnpkg.com/@mastra/pg/-/pg-1.18.0.tgz#c5cebba3550f7c14cad6eb6ad2eabd78401797c4"
+  integrity sha512-NSKHuGYw0+hHfCoARJI2xe3CtCivt5p7LBB3HhrJxn2k4F0ROTD3CY/75/5rZ+tMNnO+T7BfBL5/KB3g5SdJGA==
   dependencies:
     async-mutex "^0.5.0"
-    pg "^8.22.0"
+    pg "^8.21.0"
     pg-connection-string "^2.12.0"
     xxhash-wasm "^1.1.0"
 
@@ -4152,7 +4152,7 @@ pg-types@2.2.0:
     postgres-date "~1.0.4"
     postgres-interval "^1.1.0"
 
-pg@^8.22.0:
+pg@^8.21.0:
   version "8.23.0"
   resolved "https://registry.yarnpkg.com/pg/-/pg-8.23.0.tgz#5c2026d32bd0cb4fbd9196bac1ecf5ae66607180"
   integrity sha512-Ip2EQCngowJLGOfCwkFhPXU7/ljlhn6Rxlmy4XYfL2Y+vyRM59+8uR2xqRWKdYmbXmxCFOAmKxBuSUCdF34qLg==
