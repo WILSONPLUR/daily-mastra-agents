@@ -28,6 +28,7 @@
     "@mastra/mcp": "^1.15.0",
     "@mastra/memory": "latest",
     "@mastra/observability": "latest",
+    "@mastra/pg": "1.20.0",
     "@mastra/rag": "^2.5.0",
     "@mozilla/readability": "^0.6.0",
     "ai": "^7.0.66",

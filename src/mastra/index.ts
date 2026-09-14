@@ -1,5 +1,6 @@
 import { Mastra } from '@mastra/core/mastra';
 import { LibSQLStore } from '@mastra/libsql';
+import { PostgresStore } from '@mastra/pg';
 import { DuckDBStore } from '@mastra/duckdb';
 import { MastraCompositeStore } from '@mastra/core/storage';
 import {
@@ -18,17 +19,26 @@ import { readFiles } from './tools/read-files';
 import { importFileToDocsWorkflow } from './workflows/import-file-to-docs';
 import { ingestResourcesWorkflow } from './workflows/ingest-resources';
 
+// Keep the fallback directly guarded by DATABASE_URL for deployment preflight.
+const storageUrl =
+  process.env.DATABASE_URL || process.env.TURSO_DATABASE_URL || 'file:./mastra.db';
+
 export const mastra = new Mastra({
   agents: { agent, docsAgent, ticketAgent, mentorAgent },
   tools: { startScheduleTool, stopScheduleTool, webFetchTool, readFiles },
   workflows: { importFileToDocsWorkflow, ingestResourcesWorkflow },
   storage: new MastraCompositeStore({
     id: 'composite-storage',
-    default: new LibSQLStore({
-      id: 'mastra-storage',
-      url: process.env.TURSO_DATABASE_URL || 'file:./mastra.db',
-      authToken: process.env.TURSO_AUTH_TOKEN || undefined,
-    }),
+    default: process.env.DATABASE_URL
+      ? new PostgresStore({
+          id: 'mastra-storage',
+          connectionString: storageUrl,
+        })
+      : new LibSQLStore({
+          id: 'mastra-storage',
+          url: storageUrl,
+          authToken: process.env.TURSO_AUTH_TOKEN || undefined,
+        }),
     domains: {
       observability: await new DuckDBStore().getStore('observability'),
     },
