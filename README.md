@@ -98,12 +98,20 @@ ELASTICSEARCH_INDEX_NAME=mentor-resources
 Optional configuration:
 
 ```dotenv
+DATABASE_URL=
 TURSO_DATABASE_URL=
 TURSO_AUTH_TOKEN=
 DOCUMENT_UPLOAD_DIRS=/absolute/uploads:/another/approved/directory
 COMPOSIO_GOOGLEDRIVE_VERSION=20260721_00
 ELASTICSEARCH_API_KEY=
 ```
+
+Storage uses PostgreSQL (including Neon) when `DATABASE_URL` is set, otherwise
+Turso when `TURSO_DATABASE_URL` is set, and local SQLite for development when
+neither is set. For Mastra Platform deployments with an attached Neon database,
+verify that `DATABASE_URL` is available in the target environment, then redeploy.
+Do not commit database credentials. Existing local SQLite data is not copied to
+PostgreSQL automatically.
 
 Run the project:
 
